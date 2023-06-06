@@ -202,4 +202,36 @@ end
 
 
 # Included Higher order functions:
-# Enum.each(enumerable,function)
+# each, map, reduce, filter (similar to JS)
+# Enum.reduce(enumerable, accum, func)
+  # the function is called on every element of the enumerable, the result of that is the accumulator value for the the next function call on the next element
+  #in the function call the the first argument is the element from the enumerable and the second is the accumulator
+  # the final value is the value of the accumulator after the last element
+
+# result = Enum.reduce(1..100, 0, &(&1 + &2))
+# r = Enum.reduce(1..100,-73, &(&2 + &1 * 0))
+# IO.inspect(r)
+
+
+#Comprehensions: easy way to do nested loops
+
+q = for x <- 1..3, do: x*x
+w = for x <- 1..3, y <- 1..5, do: x*y
+# IO.inspect(w)
+
+# can use it to make any "collectable", pretty useful
+mul_table = for x <- 1..9, y <- 1..9,
+  # x <= y, #add filters
+  into: %{}, do: {{x,y},x*y}
+
+# IO.inspect(mul_table[{9,8}])
+
+#Streams -lazy enumerable, just describes the computations that will be performed on some data, doesnt go through with it until a eager enumerator demands the data
+
+#use it to save memory, no need to hold processed enumerables in memory if you dont need the data all at once
+
+def large_lines!(path) do
+  File.stream!(path) #returns a stream
+  |> Stream.map(&(String.trim_trailing(&1,"\n")))
+  |> Enum.filter(&(String.length(&1) > 80))
+end
